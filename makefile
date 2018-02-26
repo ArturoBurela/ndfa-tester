@@ -4,13 +4,13 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall
 
 # List of the objects to compile
-OBJECTS = Viewer.o main.o
-DEPS = Edge.hpp Graph.hpp InfoNode.hpp Node.hpp Vertex.hpp Viewer.hpp
+OBJECTS = state.o ndfa.o main.o
+DEPS = state.hpp ndfa.hpp main.cpp
 # Variables with rule names
-VIEWER = graph
+NDFA = ndfa
 
 # Default rule
-all: $(VIEWER)
+all: $(NDFA)
 
 # Rule to compile object files
 # Commented because it is the same as an explicit rule in Make
@@ -19,8 +19,8 @@ all: $(VIEWER)
 	#$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 # Rule to compile the program
-$(VIEWER): $(OBJECTS)
-	$(CXX) -o $@ $^ $(CXXFLAGS) $(LDFLAGS)
+$(NDFA): $(OBJECTS)
+	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 clean:
 	-rm -f *.o
