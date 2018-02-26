@@ -1,6 +1,13 @@
+// Automaton tester
 #include "ndfa.hpp"
 int main(int argc, char const *argv[]) {
-  NDFA x();
-  /* code */
-  return 0;
+  //Pass automaton data filename and string to NDFA class, else end program
+  if (argv[1] && argv[2]) {
+    std::string automatonFilename(argv[1]);
+    std::string testString(argv[2]);
+    NDFA x(automatonFilename, testString);
+    return 0;
+  } else {
+    return -1;
+  }
 }

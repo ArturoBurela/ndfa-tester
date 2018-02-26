@@ -9,10 +9,14 @@ Arturo Burela
 #include <vector>
 
 class State {
+  struct link {
+    char input;
+    State* destination;
+  };
 private:
   std::string name;
-  std::bitset<2> foo;
-  std::vector<State*> destinations;
+  std::bitset<1> end;
+  std::vector<link> destinations;
 public:
   State(){}
   State(std::string n){
