@@ -118,14 +118,13 @@ private:
   NDFA(){}
 public:
   NDFA(const std::string& filename, const std::string& testString){
-    std::cout << filename << '\n';
     std::cout << "String to test:" << testString << '\n';
     // Transform string into char queue
     for (int i = 0; i<testString.length(); i++){
       string.push(testString.at(i));
     }
     cargar(filename);
-    logStates();
+    // logStates();
     initialState->explore(string);
   }
 };

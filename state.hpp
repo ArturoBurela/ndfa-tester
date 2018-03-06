@@ -48,7 +48,7 @@ public:
     }
     // Get next input to test
     char input = string.front();
-    std::cout << "INPUT: " << input << '\n';
+    std::cout << "Estado: " << name << '\n';
     // Delete input
     string.pop();
     // Check all links of current state
