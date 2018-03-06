@@ -8,14 +8,15 @@ Arturo Burela
 #include <bitset>
 #include <vector>
 #include <iostream>
+#include <queue>
 
 class State;
 
 struct link {
-  std::string input;
+  char input;
   State* destination;
   link() = default;
-  link(std::string i, State* d){
+  link(char i, State* d){
     input = i;
     destination = d;
   }
@@ -40,11 +41,33 @@ public:
   void setFinal() {
     end.set();
   }
+  void explore(std::queue<char> string) {
+    //Return if empty
+    if (string.empty()) {
+      return;
+    }
+    // Get next input to test
+    char input = string.front();
+    std::cout << "INPUT: " << input << '\n';
+    // Delete input
+    string.pop();
+    // Check all links of current state
+    for (std::vector<link>::iterator it = destinations.begin(); it != destinations.end(); ++it){
+      // If the input matches explore
+      if (input == it->input) {
+        std::cout << "Son iguales" << '\n';
+        std::cout << "Input: " << it->input << '\n';
+        std::cout << "Destination: " << it->destination->getName() << '\n';
+        it->destination->explore(string);
+      }
+    }
+  }
+
   void logData() {
     std::cout << "State name: " << name << '\n';
     std::cout << "Final state: " << end[0] << '\n';
     std::cout << "Destinantions: " << '\n';
-    for (std::vector<link>::iterator it = this->destinations.begin(); it != this->destinations.end(); ++it){
+    for (std::vector<link>::iterator it = destinations.begin(); it != destinations.end(); ++it){
       std::cout << "Input: " << it->input << '\n';
       std::cout << "Destination: " << it->destination->getName() << '\n';
     }

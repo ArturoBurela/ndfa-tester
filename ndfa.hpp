@@ -29,6 +29,11 @@ private:
     return &*it;
   }
 
+  // Start test
+  void test(/* arguments */) {
+    /* code */
+  }
+
   // Logs all data
   void logStates() {
     for (std::vector<State>::iterator it = states.begin(); it != states.end(); ++it){
@@ -43,7 +48,7 @@ private:
     std::cout << "Loading automaton..." << std::endl;
     // Aux varaibles to store links
     std::string name;
-    std::string input;
+    char input;
     std::string destination;
     // Aux pointer to state
     State* aux;
@@ -92,7 +97,7 @@ private:
               name = destination;
               destination = "";
             } else if (*it == ':') {
-              input = destination;
+              input = destination.at(0);
               destination = "";
             } else {
               destination += *it;
@@ -115,8 +120,13 @@ public:
   NDFA(const std::string& filename, const std::string& testString){
     std::cout << filename << '\n';
     std::cout << "String to test:" << testString << '\n';
+    // Transform string into char queue
+    for (int i = 0; i<testString.length(); i++){
+      string.push(testString.at(i));
+    }
     cargar(filename);
     logStates();
+    initialState->explore(string);
   }
 };
 
