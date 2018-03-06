@@ -9,21 +9,19 @@ Arturo Burela
 #include <sstream>
 #include <queue>
 
-struct auxlink {
-  std::string state;
-  struct link link;
-};
-
 class NDFA {
 private:
-  std::string alphabet;
+  // Stores all states
   std::vector<State> states;
+  // The string to test
   std::queue<char> string;
+  // Pointer to initial State
+  State* initialState;
 
   // Returns a pointer to state searching by name
   State* findState(std::string name) {
     std::vector<State>::iterator it;
-    for (it = this->states.begin(); it != this->states.end(); ++it){
+    for (it = states.begin(); it != states.end(); ++it){
       if (it->getName() == name) {
         break;
       }
@@ -31,8 +29,9 @@ private:
     return &*it;
   }
 
+  // Logs all data
   void logStates() {
-    for (std::vector<State>::iterator it = this->states.begin(); it != this->states.end(); ++it){
+    for (std::vector<State>::iterator it = states.begin(); it != states.end(); ++it){
       it->logData();
     }
   }
@@ -42,49 +41,48 @@ private:
   void cargar(const std::string& filename)
   {
     std::cout << "Loading automaton..." << std::endl;
-    // States names
-    std::vector<std::string> states;
-    // Alphabet
-    std::vector<char> alphabet;
-    // Initial state
-    std::string initial;
-    // Final states
-    std::vector<std::string> finals;
-    // Aux name store
+    // Aux varaibles to store links
     std::string name;
     std::string input;
     std::string destination;
+    // Aux pointer to state
+    State* aux;
     std::ifstream afile(filename);
+    // Stores a line
     std::string line;
+    // Usefull to split lines
     char param = ',';
+    // Line number counter
     int i = 0;
+    // Get line data
     while(getline(afile,line))
     {
       std::stringstream   linestream(line);
-      std::string         value;
+      // Stores split line value
+      std::string value;
       if (i == 4) {
         param = '\n';
       }
+      // Call again with param to read by characters
       while(getline(linestream,value,param))
       {
+        // Process data according to line number
         switch (i) {
           case 0:
           // std::cout << "Loading states" << '\n';
-          states.push_back(value);
-          this->states.push_back(State(value));
+          states.push_back(State(value));
           break;
           case 1:
           // std::cout << "Loading alphabet" << '\n';
-          // Reading alphabet here is not necessary
-          // alphabet.push_back(value);
+          // Reading alphabet here is not really necessary
           break;
           case 2:
           // std::cout << "Loading initial state" << '\n';
-          initial = value;
+          initialState = this->findState(value);
           break;
           case 3:
           // std::cout << "Loading final state(s)" << '\n';
-          finals.push_back(value);
+          this->findState(value)->setFinal();
           break;
           default:
           // std::cout << "Loading transition function" << '\n';
@@ -101,9 +99,7 @@ private:
             }
           }
           // Find both states and add link
-          State* aux = this->findState(name);
-          State* des = this->findState(destination);
-          aux->addLink(link(input, des));
+          this->findState(name)->addLink(link(input, this->findState(destination)));
           break;
         }
       }
