@@ -17,6 +17,8 @@ private:
   std::queue<char> string;
   // Pointer to initial State
   State* initialState;
+  // Accepted paths
+  std::vector<std::vector<link>> paths;
 
   // Returns a pointer to state searching by name
   State* findState(std::string name) {
@@ -30,14 +32,39 @@ private:
   }
 
   // Start test
-  void test(/* arguments */) {
-    /* code */
+  void test() {
+    paths = initialState->explore(string);
+    // If explore paths are accepted
+    if (paths.at(0).at(0).input =! '\0') {
+      // Add initial state to final paths
+      for (std::vector<std::vector<link>>::iterator it = paths.begin(); it != paths.end(); ++it){
+        // Push current link to received path
+        it->push_back(link('\0', initialState));
+      }
+      // Log all accepted paths
+      logPaths(paths);
+    } else {
+      // If no path was found then just print and exit
+      std::cout << "/* String not accepted by automaton */" << '\n';
+    }
   }
 
   // Logs all data
   void logStates() {
     for (std::vector<State>::iterator it = states.begin(); it != states.end(); ++it){
       it->logData();
+    }
+  }
+
+  //Logs all paths
+  void logPaths(std::vector<std::vector<link>> paths) {
+    for (std::vector<std::vector<link>>::iterator it = paths.begin(); it != paths.end(); ++it){
+      std::cout << '\n' << "/* Path found: */" << '\n';
+      // Paths are stored BACKWARDS!
+      for (std::vector<link>::reverse_iterator it2 = it->rbegin(); it2 != it->rend(); ++it2){
+        std::cout << it2->input << "->" << it2->destination->getName() << "--";
+      }
+      std::cout << '\n' << "/* ------------- */" << '\n';
     }
   }
 
@@ -123,9 +150,10 @@ public:
     for (int i = 0; i<testString.length(); i++){
       string.push(testString.at(i));
     }
+    //Load automaton
     cargar(filename);
-    // logStates();
-    initialState->explore(string);
+    //Test string
+    test();
   }
 };
 
