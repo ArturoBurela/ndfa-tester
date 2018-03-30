@@ -12,6 +12,7 @@ Arturo Burela
 
 class State;
 
+// Struct to represents links
 struct link {
   char input;
   State* destination;
@@ -24,33 +25,66 @@ struct link {
 
 class State {
 private:
+  // State name
   std::string name;
+  // If state is final
   std::bitset<1> end;
+  // Vector of links to states
   std::vector<link> destinations;
 public:
   State(){}
   State(std::string n){
     name = n;
   }
+
+  // Add link to state
   void addLink(link l) {
     destinations.push_back(l);
   }
+
   std::string getName() {
     return name;
   }
+
+  // Mark state as final
   void setFinal() {
     end.set();
   }
 
+  // Recursive function returns valid paths by testing string
   std::vector<std::vector<link>> explore(std::queue<char> string) {
-    int valid = 0;
+    std::cout << "/* EXPLORE on */" << name << '\n';
+    // New paths to return
     std::vector<std::vector<link>> paths;
     std::vector<link> x;
+    // Aux to tell if valid paths were found
+    int valid = 0;
+    // First call on all epsilon links
+    for (std::vector<link>::iterator it = destinations.begin(); it != destinations.end(); ++it){
+      // If the link matches
+      if (it->input == '&') {
+        std::cout << "epsilon link on " << name << '\n';
+        // Get new vector of paths from next call
+        std::vector<std::vector<link>> p = it->destination->explore(string);
+        // If we receive valid paths append to current state
+        if (p.at(0).at(0).input == '\n') {
+          valid = 1;
+          // Iterate over paths and append current link
+          for (std::vector<std::vector<link>>::iterator it2 = p.begin(); it2 != p.end(); ++it2){
+            // Push current link to received path
+            it2->push_back(*it);
+            // Push path to paths
+            paths.push_back(*it2);
+          }
+        }
+      }
+    }
     //Stop condition when string is empty
     if (string.empty()) {
       // Check if state is final
       if (end.test(0)) {
         // Return a link with '\n' if accepted
+        std::cout << "accepted in " << name << '\n';
         x.push_back(link('\n', this));
       } else {
         // Else return '\0'
@@ -65,12 +99,12 @@ public:
     string.pop();
     // Check all links of current state
     for (std::vector<link>::iterator it = destinations.begin(); it != destinations.end(); ++it){
-      // If the input matches explore
+      // If the input matches links input
       if (input == it->input) {
         // Get new vector of paths from next call
         std::vector<std::vector<link>> p = it->destination->explore(string);
         // If we receive valid paths append to current state
-        if (p.at(0).at(0).input =! '\0') {
+        if (p.at(0).at(0).input == '\n') {
           valid = 1;
           // Iterate over paths and append current link
           for (std::vector<std::vector<link>>::iterator it2 = p.begin(); it2 != p.end(); ++it2){
