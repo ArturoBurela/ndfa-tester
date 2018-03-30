@@ -4,7 +4,7 @@ Arturo Burela
 #ifndef NDFA_HPP
 #define NDFA_HPP
 
-#include "state.hpp"
+#include "state.cpp"
 #include <fstream>
 #include <sstream>
 #include <queue>
@@ -20,7 +20,7 @@ private:
   // Accepted paths
   std::vector<std::vector<link>> paths;
 
-  // Returns a pointer to state searching by name
+  // Returns state searching by name
   State* findState(std::string name) {
     std::vector<State>::iterator it;
     for (it = states.begin(); it != states.end(); ++it){
@@ -33,17 +33,21 @@ private:
 
   // Start test
   void test() {
-    // Call to explore to get valid paths
+    std::bitset<1> valid;
+    // Call to explore to get paths
     paths = initialState->explore(string);
-    // If at least one path is accepted
-    if (paths.at(0).at(0).input == '\n') {
-      // Add initial state to final paths
-      for (std::vector<std::vector<link>>::iterator it = paths.begin(); it != paths.end(); ++it){
-        // Push current link to received path
+    for (std::vector<std::vector<link>>::iterator it = paths.begin(); it != paths.end(); ++it){
+      // If path is accepted
+      if (it->at(0).input != '\0') {
+        valid.set();
+        // Push current state to received path
         it->push_back(link('\0', initialState));
         // Remove first item as it is finalState self pointer
         it->erase(it->begin());
       }
+    }
+    if (valid.test(0)) {
+      std::cout << "/* String accepted by automaton */" << '\n';
       // Log all accepted paths
       logPaths(paths);
     } else {
@@ -63,7 +67,7 @@ private:
   void logPaths(std::vector<std::vector<link>> paths) {
     for (std::vector<std::vector<link>>::iterator it = paths.begin(); it != paths.end(); ++it){
       std::cout << '\n' << "/* Path found: */" << '\n';
-      // Paths are stored BACKWARDS!
+      // Valid paths are stored BACKWARDS!
       for (std::vector<link>::reverse_iterator it2 = it->rbegin(); it2 != it->rend(); ++it2){
         std::cout << it2->input << "->[" << it2->destination->getName() << "]-";
       }
@@ -79,8 +83,6 @@ private:
     std::string name;
     char input;
     std::string destination;
-    // Aux pointer to state
-    State* aux;
     std::ifstream afile(filename);
     // Stores a line
     std::string line;
@@ -147,10 +149,11 @@ private:
   }
   NDFA(){}
 public:
+  // This constructor loads automaton and test string
   NDFA(const std::string& filename, const std::string& testString){
     std::cout << "String to test:" << testString << '\n';
     // Transform string into char queue
-    for (int i = 0; i<testString.length(); i++){
+    for (int i = 0; (unsigned) i < testString.length(); i++){
       string.push(testString.at(i));
     }
     //Load automaton

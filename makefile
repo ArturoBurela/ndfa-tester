@@ -5,7 +5,6 @@ CXXFLAGS = -std=c++11 -Wall
 
 # List of the objects to compile
 OBJECTS = state.o ndfa.o main.o
-DEPS = state.hpp ndfa.hpp main.cpp
 # Variables with rule names
 NDFA = ndfa
 
