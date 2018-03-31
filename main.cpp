@@ -1,12 +1,12 @@
 // Automaton tester
-#include "ndfa.cpp"
+#include "nfa.cpp"
 int main(int argc, char const *argv[]) {
   //Pass automaton data filename and string to NDFA class, else end program
   if (argv[1] && argv[2]) {
     std::string automatonFilename(argv[1]);
     std::string testString(argv[2]);
     // This constructor runs test
-    NDFA x(automatonFilename, testString);
+    NFA x(automatonFilename, testString);
     return 0;
   } else {
     std::cout << "/* Missing arguments */" << '\n';

@@ -4,12 +4,12 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall
 
 # List of the objects to compile
-OBJECTS = state.o ndfa.o main.o
+OBJECTS = state.o nfa.o main.o
 # Variables with rule names
-NDFA = ndfa
+NFA = nfa
 
 # Default rule
-all: $(NDFA)
+all: $(NFA)
 
 # Rule to compile object files
 # Commented because it is the same as an explicit rule in Make
@@ -18,7 +18,7 @@ all: $(NDFA)
 	#$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 # Rule to compile the program
-$(NDFA): $(OBJECTS)
+$(NFA): $(OBJECTS)
 	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 clean:

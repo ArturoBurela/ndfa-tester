@@ -1,15 +1,15 @@
 /*
 Arturo Burela
 */
-#ifndef NDFA_HPP
-#define NDFA_HPP
+#ifndef NFA_HPP
+#define NFA_HPP
 
 #include "state.cpp"
 #include <fstream>
 #include <sstream>
 #include <queue>
 
-class NDFA {
+class NFA {
 private:
   // Stores all states
   std::vector<State> states;
@@ -147,10 +147,10 @@ private:
     afile.close();
     std::cout << "Automaton loaded" << std::endl;
   }
-  NDFA(){}
+  NFA(){}
 public:
   // This constructor loads automaton and test string
-  NDFA(const std::string& filename, const std::string& testString){
+  NFA(const std::string& filename, const std::string& testString){
     std::cout << "String to test:" << testString << '\n';
     // Transform string into char queue
     for (int i = 0; (unsigned) i < testString.length(); i++){
